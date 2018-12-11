@@ -7157,10 +7157,16 @@
     - NIST-800-171-3.5.4
     - NIST-800-171-3.13.8
     - DISA-STIG-RHEL-07-040310
+-   name: Find /etc/ssh/*_key files
+    find:
+        paths: /etc/ssh
+        patterns: "*_key"
+    register: etc_ssh_key_find_result
 -   name: Ensure permission 0640 on /etc/ssh/*_key
     file:
-        path: /etc/ssh/*_key
+        path: "{{ item.path }}"
         mode: 416
+    with_items: "{{ etc_ssh_key_find_result.files }}"
     tags:
     - file_permissions_sshd_private_key
     - medium_severity
